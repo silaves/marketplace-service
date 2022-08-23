@@ -1,0 +1,12 @@
+FROM node:16-bullseye
+
+WORKDIR /app
+
+# Copy files into the container image.
+COPY . .
+
+# Install dependencies.
+RUN npm install
+
+# Run the web service on container startup.
+EXPOSE 8080

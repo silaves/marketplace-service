@@ -1,0 +1,58 @@
+version: '3'
+services:
+
+  # marketplace-service
+  marketplace-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: marketplace-service
+    image: marketplace-service:latest
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://marketplace-redis:6379/0
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE_NAME=${MYSQL_DATABASE_NAME}
+      - DB_DIALECT=${DB_DIALECT}
+    command: ['npm', 'start']
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+      - ./docker:/app/docker
+    ports:
+      - ${PORT}:8080
+    depends_on:
+      - marketplace-redis
+      - marketplace-mysql
+
+  # marketplace database
+  marketplace-mysql:
+    platform: linux/x86_64
+    image: marketplace-mysql:latest
+    build: ./docker/database/.
+    restart: always
+    container_name: marketplace-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE_NAME}
+    ports:
+      - 3306:3306
+    command:
+      - --default-authentication-plugin=mysql_native_password
+
+  # marketplace redis
+  marketplace-redis:
+    image: redis:6.2.4
+    container_name: marketplace-redis
+    volumes:
+      - redis-data:/data
+    ports:
+      - '6380:6379'
+
+volumes:
+  redis-data:
+#  db-data:
