@@ -85,3 +85,30 @@ To get a token:
 
 ### Private endpoints
 It is necessary to have the authentication token in the header. A postman collection has been added, please check it for more details.
+
+Relevant details:
+
+```bash
+/api/products/
+```
+Creates a product and associates it with the authenticated user
+
+```bash
+/api/products/my-products/
+```
+Gets the products of the authenticated user
+
+```bash
+/api/transactions/
+```
+Creates a purchase/transaction, the purchaser is the authenticated user
+
+```bash
+/api/transactions/my-sales
+```
+Gets a detail of the sales/transactions of your products from the authenticated user
+
+```bash
+/api/transactions/my-transactions
+```
+Gets the purchases/transactions made from the authenticated user.
